@@ -91,14 +91,14 @@ def status_text(st, extra=""):
     note = f"\n\n(Smart selection is off, using colour selection instead: {rc.sam_error})" if rc.sam_error else ""
     act = st["palettes"][st["active"]]["name"] if st.get("active") is not None and st["active"] < len(st["palettes"]) else None
     if st["sel"]:
-        msg = ("🟡 **Part selected.** The yellow area will change. Missed a bit? Click it. "
+        msg = ("**Part selected.** The yellow area will change. Missed a bit? Click it. "
                "Took too much? Open *Fine-tune* and choose Remove area. Then tap a colour." + _next_hint(st))
     elif st["parts"]:
-        msg = f"✅ **{len(st['parts'])} part(s) coloured.** Click another part, or press **Next**." + _next_hint(st)
+        msg = f"**{len(st['parts'])} part(s) coloured.** Click another part, or press **Next**." + _next_hint(st)
     elif act:
-        msg = f"🧵 **{act}** picked. Click a part of the photo, then tap its colour."
+        msg = f"**{act}** picked. Click a part of the photo, then tap its colour."
     else:
-        msg = "👆 **Click a part of the photo** to start. The first click can take a minute while the photo is analysed."
+        msg = "**Click a part of the photo** to start. The first click can take a minute while the photo is analysed."
     return (extra + "\n\n" if extra else "") + msg + note
 
 
@@ -172,7 +172,7 @@ def auto_colour(st):
         picks = assign_colours(rc.auto_parts(), pal["colors"], st.get("cat", "general"))
     if not picks:
         raise ValueError("no parts found")
-    st["parts"] = [{"points": c["points"], "rid": c["rid"], "hex": h, "name": n, "tol": 1.0, "grow": 4, "smart": True}
+    st["parts"] = [{"points": c["points"], "rid": c["rid"], "hex": h, "name": n, "tol": 1.0, "grow": 4, "smart": False}
                    for c, h, n in picks]
     st["sel"] = None
     return render_current(st)
@@ -277,7 +277,7 @@ def on_click(st, mode, smart, evt: gr.SelectData):
         if st["sel"] is not None:
             return st, gr.update(), status_text(st, "Finish this part first: tap a colour, or press **Cancel selection**."), gr.update()
         st["poly"].append((x, y))
-        return (st, _shape_view(st, rc), status_text(st, f"✏️ **{len(st['poly'])} corner(s).** Click the next corner. "
+        return (st, _shape_view(st, rc), status_text(st, f"**{len(st['poly'])} corner(s).** Click the next corner. "
                 "Go a little outside the edge of the item, it is trimmed automatically. When the shape is done press **Close shape**."), gr.update())
     if st["sel"] is not None and st["sel"].get("rid") in rc._exact:
         return st, gr.update(), status_text(st, "A drawn shape can't be extended. Tap a colour, or **Cancel selection** and draw it again."), gr.update(visible=True)
@@ -504,7 +504,7 @@ def create_quote(st, item, size, qty, due, changes, customer, acct):
           f"- Earliest ready date: {res['earliest']:%d %b %Y}" + (f" (counts your {queued} agreed order{'s' if queued != 1 else ''})" if queued else "") + "\n")
     if res.get("yarn_text"): md += f"- Yarn by colour (estimate from picture area): {res['yarn_text']}\n"
     if res["due_warning"]: md += f"- **{res['due_warning']}**\n"
-    for m in heads_up: md += f"- ⚠️ **{m}**\n"
+    for m in heads_up: md += f"- **{m}**\n"
     after = gr.update(value=preview, visible=bool(preview))
     return (st, "", *nav(4), st["base"] or st["photo"], after, md, make_reply(res, customer or ""), "", nocard)
 
@@ -512,7 +512,7 @@ def create_quote(st, item, size, qty, due, changes, customer, acct):
 def log_it(st, acct):
     if not st.get("res"): return st, "Nothing to log yet."
     store = accounts.store_for(acct)
-    if store is None: return st, "🔒 Sign in (Account tab) to save orders. Your quote and card still work without it."
+    if store is None: return st, "Sign in (Account tab) to save orders. Your quote and card still work without it."
     if st["logged"]: return st, "Already logged."
     try:
         log_result(st["res"], st["customer"], path=store.orders_path, cfg=store.cfg())
@@ -552,7 +552,7 @@ def orders_view(acct, search="", status="All"):
     """table rows, summary, status picker, workload note"""
     store = accounts.store_for(acct)
     if store is None:
-        return [], "🔒 **Sign in to see and manage your orders** (Account tab).", gr.update(choices=[], value=None), ""
+        return [], "**Sign in to see and manage your orders** (Account tab).", gr.update(choices=[], value=None), ""
     cfg = store.cfg()
     ords = ordersmod.read_orders(store.orders_path)
     today = datetime.date.today()
@@ -565,7 +565,7 @@ def orders_view(acct, search="", status="All"):
              and (not s or s in f"{o.get('Customer','')} {o.get('Item','')} {o.get('Colors requested','')}".lower())]
     rows = []
     for o in shown:
-        flag = "⚠ overdue" if o["row"] in over else ("⚠ at risk" if o["row"] in risk else "")
+        flag = "Overdue" if o["row"] in over else ("At risk" if o["row"] in risk else "")
         rows.append([o["row"], str(o.get("Date") or ""), o.get("Customer") or "", o.get("Item") or "", o.get("Qty") or "",
                      o.get("Colors requested") or "", o.get("Price (Rs)") or "", o["status"], str(o["due"] or ""), flag])
     pick = gr.update(choices=[(f"#{o['row']} · {o.get('Customer') or 'No name'} · {o.get('Item')} · {o['status']}", o["row"]) for o in shown], value=None)
@@ -577,7 +577,7 @@ def orders_view(acct, search="", status="All"):
                 f"**{ordersmod.queue_earliest(ords, 0, cfg):%d %b}**.")
         late = [o for o in ords if o["row"] in risk or o["row"] in over]
         for o in late:
-            work += f"\n\n⚠️ **{o.get('Customer') or 'An order'}'s {o.get('Item')}** (due {o['due']:%d %b}) " + \
+            work += f"\n\n**{o.get('Customer') or 'An order'}'s {o.get('Item')}** (due {o['due']:%d %b}) " + \
                     ("is overdue." if o["row"] in over else "will not be ready by then at your daily hours.")
     return rows, summ, pick, work
 
@@ -594,7 +594,7 @@ def orders_set_status(acct, row, new_status, search, status):
 def settings_load(acct):
     store = accounts.store_for(acct)
     if store is None:
-        return [gr.update()] * len(accounts.SETTING_FIELDS) + ["🔒 **Sign in to set your own prices** (Account tab). Guests see the shop's default prices in quotes."]
+        return [gr.update()] * len(accounts.SETTING_FIELDS) + ["**Sign in to set your own prices** (Account tab). Guests see the shop's default prices in quotes."]
     return [*accounts.get_settings(store), ""]
 
 
@@ -843,7 +843,7 @@ try:
     with open(os.path.join(HERE, "assets", "sloth_logo.png"), "rb") as _f:
         LOGO_IMG = "<img id='logo-img' alt='Sleepy sloth logo' src='data:image/png;base64," + base64.b64encode(_f.read()).decode() + "'>"
 except OSError:
-    LOGO_IMG = "<span class='ball'>🧶</span>"   # logo file missing: fall back to an emoji
+    LOGO_IMG = "<span class='ball'></span>"   # logo file missing: fall back to an emoji
 
 
 import inspect
@@ -876,7 +876,7 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
     acct = gr.State({"user": None})
 
     with gr.Tabs(**_tabs_kw):
-      with gr.Tab("🧶 New order"):
+      with gr.Tab("New order"):
             # ---- 1. photo ----
             with gr.Column(visible=True, elem_classes="card narrow") as s1:
                 chip(1, "Photo")
@@ -892,7 +892,7 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
                 gr.Markdown("### Does the customer want a colour change?")
                 s2_info = gr.Markdown()
                 with gr.Row():
-                    btn_yes = gr.Button("🎨 Yes, change the colour", variant="primary", size="lg")
+                    btn_yes = gr.Button("Yes, change the colour", variant="primary", size="lg")
                     btn_no = gr.Button("No, keep the original", size="lg")
 
             # ---- 3. colours: choices on the left, photo on the right ----
@@ -922,10 +922,10 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
                         with gr.Accordion("Fine-tune the selection", open=False):
                             mode = gr.Radio(["Add area", "Remove area", "Draw shape"], value="Add area", label="Each click will")
                             with gr.Row(visible=False) as shape_row:
-                                btn_close = gr.Button("✔ Close shape", variant="primary")
-                                btn_corner = gr.Button("↩ Undo corner")
+                                btn_close = gr.Button("Close shape", variant="primary")
+                                btn_corner = gr.Button("Undo corner")
                             natural = gr.Checkbox(value=True, label="Natural lighting finish (keeps the photo's light and shadow on the new colour)")
-                            smart = gr.Checkbox(value=True, label="Smart selection (untick if the page freezes)")
+                            smart = gr.Checkbox(value=False, label="Smart selection (more precise, but needs a lot of memory: tick it only on a powerful computer)")
                             gr.Markdown("Not clean enough? These adjust the last part:")
                             with gr.Row():
                                 btn_more = gr.Button("Old colour left at the edge")
@@ -935,7 +935,7 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
                                 btn_strict = gr.Button("Spilling onto other parts")
                             btn_adjreset = gr.Button("Reset adjustments")
                         with gr.Row():
-                            btn_undo = gr.Button("↩ Undo")
+                            btn_undo = gr.Button("Undo")
                             btn_reset = gr.Button("Start over")
                         btn_next = gr.Button("Next →", variant="primary", size="lg")
                     with gr.Column(scale=6, min_width=340, elem_classes="right-col"):
@@ -965,15 +965,15 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
                 quote_md = gr.Markdown()
                 reply_box = gr.Textbox(label="Reply draft (select, copy and edit)", lines=10)
                 with gr.Row():
-                    btn_log = gr.Button("📒 Log this order", variant="primary")
-                    btn_card = gr.Button("🖼 Make quote card")
+                    btn_log = gr.Button("Log this order", variant="primary")
+                    btn_card = gr.Button("Make quote card")
                     btn_new = gr.Button("New order")
                 card_img = gr.Image(label="Quote card (use the download icon to save it)", interactive=False, visible=False)
                 log_msg = gr.Markdown()
 
 
       # ---- orders ----
-      with gr.Tab("📒 Orders") as tab_orders:
+      with gr.Tab("Orders") as tab_orders:
         with gr.Column(elem_classes="card"):
             gr.Markdown("### Your orders")
             gr.Markdown("**Quoted** = price sent · **Pending** = customer said yes · **In progress** · **Done** · **Cancelled**. "
@@ -983,7 +983,7 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
             with gr.Row():
                 ord_search = gr.Textbox(label="Search customer, item or colour", scale=3)
                 ord_filter = gr.Dropdown(["All"] + ordersmod.STATUSES, value="All", label="Show", scale=1)
-                btn_ord_refresh = gr.Button("↻ Refresh", scale=1)
+                btn_ord_refresh = gr.Button("Refresh", scale=1)
             ord_table = gr.Dataframe(headers=ORDER_COLS, value=[], interactive=False, wrap=True)
             with gr.Row():
                 ord_pick = gr.Dropdown([], label="Pick an order", scale=3)
@@ -991,7 +991,7 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
                 btn_ord_set = gr.Button("Update status", variant="primary", scale=1)
             ord_msg = gr.Markdown()
       # ---- prices ----
-      with gr.Tab("💰 Prices") as tab_prices:
+      with gr.Tab("Prices") as tab_prices:
         with gr.Column(elem_classes="card narrow"):
             gr.Markdown("### Your prices")
             gr.Markdown("New quotes use these numbers. Past orders keep the price they were logged with.")
@@ -1002,7 +1002,7 @@ with gr.Blocks(title="Crochet order assistant", **_blocks_kw) as demo:
             set_msg = gr.Markdown()
       # ---- account ----
       if accounts.ACCOUNTS_ON:
-       with gr.Tab("👤 Account") as tab_acct:
+       with gr.Tab("Account") as tab_acct:
         with gr.Column(elem_classes="card narrow"):
             gr.Markdown("### Sign in to save your orders and prices\n"
                         "You can make quotes, colour previews and quote cards without an account. "
