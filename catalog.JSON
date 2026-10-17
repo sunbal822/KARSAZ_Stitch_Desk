@@ -1,0 +1,24 @@
+{
+  "romper_basic":  {"name": "Crochet romper", "grams": 160, "hours": 14, "colors": 2, "category": "baby clothes", "base_age_months": 12},
+  "tulip_bouquet": {"name": "Crochet tulip bouquet", "grams": 80, "hours": 5, "colors": 2, "category": "flower"},
+  "baby_dress":    {"name": "Baby dress with daisy motifs", "grams": 320, "hours": 10, "colors": 2, "category": "baby clothes", "base_age_months": 12},
+  "bucket_hat":    {"name": "Bucket hat with daisy motifs", "grams": 80, "hours": 5, "colors": 2, "category": "baby clothes", "base_age_months": 12},
+  "baby_cardigan": {"name": "Baby cardigan with daisy motifs", "grams": 160, "hours": 10, "colors": 2, "category": "baby clothes", "base_age_months": 12},
+  "star_cocoon":   {"name": "Star baby cocoon / swaddle", "grams": 250, "hours": 12, "colors": 2, "category": "baby clothes", "base_age_months": 0, "_check": "grams/hours are still a guess, not from your order sheet"},
+
+  "bunny airpod cases": {"grams": 80, "hours": 7, "colors": 2, "category": "cases"},
+  "sling bag":          {"grams": 160, "hours": 3, "colors": 3, "category": "bag"},
+  "rose gajray":        {"grams": 80, "hours": 7, "colors": 2, "category": "accessories"},
+  "khana kaaba":        {"grams": 80, "hours": 4, "colors": 2, "category": "keychain"},
+  "sunflower":          {"grams": 80, "hours": 5, "colors": 2, "category": "flower"},
+  "lily":               {"grams": 80, "hours": 5, "colors": 2, "category": "flower"},
+  "rose":               {"grams": 80, "hours": 5, "colors": 2, "category": "flower"},
+  "baby shoes":         {"grams": 80, "hours": 10, "colors": 1, "category": "baby clothes", "base_age_months": 12},
+  "white baby shoes":   {"grams": 100, "hours": 5, "colors": 2, "category": "baby clothes", "base_age_months": 12},
+  "rose bouquet":       {"grams": 300, "hours": 7, "colors": 3, "category": "bouquet"},
+  "paranda":            {"grams": 220, "hours": 7, "colors": 1, "category": "accessories"},
+  "batman plushie":     {"grams": 100, "hours": 7, "colors": 3, "category": "plushie"},
+  "spiderman plushie":  {"grams": 120, "hours": 7, "colors": 3, "category": "plushie"},
+  "hello kitty plushie":{"grams": 120, "hours": 7, "colors": 3, "category": "plushie"},
+  "football keychain":  {"grams": 80, "hours": 7, "colors": 2, "category": "keychain"}
+}

@@ -1,0 +1,8 @@
+ollama
+openpyxl
+gradio
+rembg
+onnxruntime
+opencv-python-headless
+pillow
+numpy

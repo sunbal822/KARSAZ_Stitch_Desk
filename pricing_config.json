@@ -1,0 +1,114 @@
+{
+  "yarn_cost_per_100g": 225,
+  "hourly_rate": 50,
+  "extra_color_charge": 20,
+  "default_markup": 1.4,
+  "category_markup": {},
+  "min_markup": 1.0,
+  "round_to": 50,
+  "complexity": {
+    "extra_change_multiplier": 0.1,
+    "max": 1.5
+  },
+  "schedule": {
+    "hours_per_day": 3,
+    "buffer_days": 2
+  },
+  "status_default": "Quoted",
+  "age_size_factors_months": [
+    [
+      0,
+      0.6
+    ],
+    [
+      3,
+      0.7
+    ],
+    [
+      6,
+      0.85
+    ],
+    [
+      12,
+      1.0
+    ],
+    [
+      24,
+      1.2
+    ],
+    [
+      36,
+      1.4
+    ],
+    [
+      48,
+      1.6
+    ],
+    [
+      60,
+      1.8
+    ],
+    [
+      72,
+      2.0
+    ]
+  ],
+  "size_chart_months": [
+    [
+      0,
+      50,
+      40
+    ],
+    [
+      3,
+      60,
+      42
+    ],
+    [
+      6,
+      67,
+      44
+    ],
+    [
+      12,
+      76,
+      47
+    ],
+    [
+      24,
+      86,
+      50
+    ],
+    [
+      36,
+      95,
+      52
+    ],
+    [
+      48,
+      102,
+      54
+    ],
+    [
+      60,
+      109,
+      56
+    ],
+    [
+      72,
+      116,
+      58
+    ]
+  ],
+  "_notes": {
+    "yarn_cost_per_100g": "Your sheet uses 225 (80 g = Rs 180). Change if 200 is right.",
+    "category_markup": "Optional, e.g. {\"plushie\": 1.9}. Empty = everything uses default_markup.",
+    "complexity": "Each extra change the customer asks for (e.g. 'add ears') adds 10% to hours, capped at +50%. ASSUMPTION: adjust to your real experience.",
+    "schedule": "ASSUMPTION: you crochet about 3 hours a day, plus 2 spare days. Due date = today + hours / hours_per_day + buffer_days.",
+    "age_size_factors_months": "ESTIMATE: [age in months, yarn and hours relative to a 12-month garment]. Check against real garments.",
+    "size_chart_months": "APPROXIMATE typical values: [age in months, height cm, chest cm]. Replace with your own measurements."
+  },
+  "profile": {
+    "shop_name": "KARSAZ Stitch Studio"
+  }
+}
