@@ -197,7 +197,10 @@ def start(photo, message, st):
         from extract import extract
         ex.update(extract(photo, msg or "Customer wants this item as shown."))
     except Exception as e:
-        note = f"(Could not read the photo automatically: {e}. You can fill things in by hand.)\n\n"
+        if "connect" in str(e).lower() or "ollama" in str(e).lower():   # no local AI model (e.g. on the website)
+            note = "(Automatic photo reading needs the local AI model, which is not available on this website. Choose the item and details by hand.)\n\n"
+        else:
+            note = f"(Could not read the photo automatically: {e}. You can fill things in by hand.)\n\n"
     if not msg:   # nothing was written, so nothing can be requested: the model must not invent colours, sizes or changes
         ex.update(requested_colors=[], quantity=1, requested_size=None, other_changes=[])
     # Colours come ONLY from the words the customer wrote (never from the model's guess)
